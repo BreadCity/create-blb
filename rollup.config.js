@@ -4,7 +4,8 @@ export default {
   input: 'src/index.ts',
   output: {
     dir: 'dist',
-    format: 'cjs'
+    format: 'cjs',
+    sourcemap: true
   },
   plugins: [typescript({
     allowSyntheticDefaultImports: true,
@@ -12,5 +13,13 @@ export default {
     sourceRoot: 'dist',
     declaration: true,
     declarationDir: 'dist',
-  })]
+  }),{
+    renderChunk: (code)=>{
+      return {
+        code: `#!/usr/bin/env node
+${code}`,
+        map: null
+      }
+    }
+  }]
 };
