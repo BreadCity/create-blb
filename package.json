@@ -1,6 +1,7 @@
 {
   "name": "create-blb",
-  "version": "0.0.1",
+  "displayName": "Create BLB",
+  "version": "0.0.2",
   "description": "Creates a blb application",
   "main": "dist/index.js",
   "scripts": {
@@ -23,8 +24,8 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@exponentialworkload/logger": "^1.0.2",
     "chalk": "^4.1.2",
+    "@exponentialworkload/logger": "^1.0.2",
     "command-exists": "^1.2.9",
     "get-cursor-position": "^2.0.0",
     "prompts": "^2.4.2"

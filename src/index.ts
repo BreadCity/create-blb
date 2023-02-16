@@ -5,7 +5,18 @@ import { resolve } from 'path';
 import { copySync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'fs-extra';
 import { execSync } from 'child_process';
 import {sync as commandExistsSync} from 'command-exists'
+import chalk from 'chalk';
 Logger.postGuillemet=true;
+try {
+  const ourPackage = JSON.parse(readFileSync(__dirname+'/../package.json','utf-8'))
+  console.log('\n'.repeat(2));
+  console.log(chalk.grey(`${ourPackage.name} version ${ourPackage.version}`));
+  console.log('');
+  console.log(chalk.redBright.bold(`  Welcome to ${ourPackage.displayName??ourPackage.name}`));
+  console.log('');
+} catch (error) {
+  console.warn('Error obtaining package info:',error);
+}
 const mappings = {
   'barebones': 'Barebones Application',
   'demo': 'Demo',
@@ -122,16 +133,16 @@ const mappings = {
         choices: [
           {
             title: 'Abort',
-            value: false
+            value: false,
+          },
+          {
+            title: 'Clear',
+            value: 'clear'
           },
           {
             title: 'Overwrite',
             value: 'overwrite'
           },
-          {
-            title: 'Clear',
-            value: 'clear'
-          }
         ]
       })).confirmation
       switch (option) {
