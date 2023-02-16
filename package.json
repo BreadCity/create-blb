@@ -1,6 +1,6 @@
 {
   "name": "create-blb",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Creates a blb application",
   "main": "dist/index.js",
   "scripts": {
