@@ -9,7 +9,8 @@ import chalk from 'chalk';
 Logger.postGuillemet=true;
 try {
   const ourPackage = JSON.parse(readFileSync(__dirname+'/../package.json','utf-8'))
-  console.log('\n'.repeat(2));
+  console.clear()
+  console.log('');
   console.log(chalk.grey(`${ourPackage.name} version ${ourPackage.version}`));
   console.log('');
   console.log(chalk.redBright.bold(`  Welcome to ${ourPackage.displayName??ourPackage.name}`));
@@ -22,7 +23,6 @@ const mappings = {
   'demo': 'Demo',
 } as Record<string,string>;
 (async()=>{
-  process.stdout.clearLine(0);
   const logger = new Logger()
   const baseTemplateFiles = resolve(__dirname,'..','templateFiles')
   const templates = readdirSync(baseTemplateFiles).filter(v=>v!=='all').map(v=>({
