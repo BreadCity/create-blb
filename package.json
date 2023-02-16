@@ -1,13 +1,14 @@
 {
   "name": "create-blb",
   "displayName": "Create BLB",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Creates a blb application",
   "main": "dist/index.js",
   "scripts": {
     "build": "rollup -c --bundleConfigAsCjs",
     "dev": "echo $ build && rollup -c --bundleConfigAsCjs && echo $ start && node .",
-    "start": "node ."
+    "start": "node .",
+    "prepublish": "pnpm build"
   },
   "keywords": [],
   "author": "Exponential-Workload",
