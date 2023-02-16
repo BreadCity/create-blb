@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "blb-prod",
+    "prod": "blb-prod",
     "dev": "blb-dev"
   },
   "keywords": [],

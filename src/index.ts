@@ -13,7 +13,7 @@ try {
   console.log('');
   console.log(chalk.grey(`${ourPackage.name} version ${ourPackage.version}`));
   console.log('');
-  console.log(chalk.redBright.bold(`  Welcome to ${ourPackage.displayName??ourPackage.name}`));
+  console.log(chalk.rgb(0xff,0x77,0xff).bold(`  Welcome to ${ourPackage.displayName??ourPackage.name}`));
   console.log('');
 } catch (error) {
   console.warn('Error obtaining package info:',error);
@@ -205,5 +205,20 @@ const mappings = {
   execSync(packageManagerRun+' build',{
     cwd: outdir
   })
-  logger.success('Done!')
+  console.log('\n'.repeat(2))
+  // inspired heavily by create-svelte
+  console.log(`${chalk.green.bold(`Your project, ${name}, is ready!`)}
+Next Steps:
+  ${chalk.grey('1:')} ${chalk.rgb(0xff,0x77,0xff)(`cd "${response.location}"`)}
+  ${chalk.grey('2:')} ${chalk.rgb(0xff,0x77,0xff)(`git init && git add . && git commit -m "feat: Initial Commit"`)} (optional)
+  ${chalk.grey('3:')} ${chalk.rgb(0xff,0x77,0xff)(`${packageManagerRun} dev`)}
+
+To close the dev server, hit Ctrl-C
+
+Need to build a production build? Use ${chalk.rgb(0xff,0x77,0xff)(`${packageManagerRun} build`)}
+
+Stuck? Talk to us at ${chalk.underline('https://cord.breadhub.cc/')}`);
+  // logger.info('Dev Instructions',`To start a development server using blb & ${packageManager}, run '${packageManagerRun} dev' in the project directory\n     Usage Instructions will be shown in the console`)
+  // logger.info('Build Instructions',`To build your project using blb & ${packageManager}, run '${packageManagerRun} build' in the project directory\n     The resulting file will be 'out.lua'`)
+  // logger.info('Source Code','The Source Code is located in the \'src\' directory of '+outdir)
 })()
