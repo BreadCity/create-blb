@@ -6,9 +6,18 @@ import { copySync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, wri
 import { execSync } from 'child_process';
 import {sync as commandExistsSync} from 'command-exists'
 Logger.postGuillemet=true;
+const mappings = {
+  'barebones': 'Barebones Application',
+  'demo': 'Demo',
+} as Record<string,string>;
 (async()=>{
   process.stdout.clearLine(0);
   const logger = new Logger()
+  const baseTemplateFiles = resolve(__dirname,'..','templateFiles')
+  const templates = readdirSync(baseTemplateFiles).filter(v=>v!=='all').map(v=>({
+    title: mappings[v]??v,
+    value: v,
+  }))
   const response = await prompts([
     {
       name: 'projectname',
@@ -79,6 +88,16 @@ Logger.postGuillemet=true;
       ],
     },
     {
+      name: 'template',
+      type: 'select',
+      choices: templates.map(v=>(v.value==='demo'?{
+        title: v.title,
+        value: v.value,
+        selected: true,
+      }:v)),
+      message: 'Which template would you like to use?',
+    },
+    {
       name: 'completed',
       type: 'confirm',
       message: 'Is the above information correct?',
@@ -94,7 +113,6 @@ Logger.postGuillemet=true;
   const outdir = resolve(response.location);
   const name = response.projectname;
   const author = response.projectauthor;
-  const templateFiles = resolve(__dirname,'..','templateFiles')
   if (existsSync(outdir)) {
     if (readdirSync(outdir).length > 0) {
       const option = (await prompts({
@@ -134,21 +152,23 @@ Logger.postGuillemet=true;
   if (!existsSync(outdir))
     mkdirSync(outdir);
   logger.info('Copying Template')
-  copySync(templateFiles,outdir)
+  copySync(resolve(baseTemplateFiles,'all'),outdir)
+  copySync(resolve(baseTemplateFiles,response.template),outdir)
   logger.info('Overwriting package.json')
-  const templatePackageJSON = JSON.parse(readFileSync(resolve(templateFiles,'package.json'),'utf-8'));
+  const templatePackageJSON = JSON.parse(readFileSync(resolve(outdir,'package.json'),'utf-8'));
   templatePackageJSON.license = licenses.join(' OR ');
   templatePackageJSON.name = name.toLowerCase();
   templatePackageJSON.displayName = name;
   templatePackageJSON.author = author;
   writeFileSync(resolve(outdir,'package.json'),JSON.stringify(templatePackageJSON,null,2))
+  let template = (a:string)=>a.replace(/<program>/gui,name).replace(/<year>/gui,new Date().getFullYear().toString()).replace(/<name of author>/gui,author).replace(/<license name>/gui,licenses.join(', '))
   if (licenses.length === 1 && licenseContents[licenses[0]]) {
     logger.info('Writing to License')
-    const license = licenseContents[licenses[0]].replace(/<program>/gui,name).replace(/<year>/gui,new Date().getFullYear().toString()).replace(/<name of author>/gui,author)
+    const license = template(licenseContents[licenses[0]])
     writeFileSync(resolve(outdir,'LICENSE.md'),license)
   } else 
-    logger.warn('>1 License, not writing to License.md')
-  logger.info('Installing Dependencies')
+    logger.warn('WNOLICENSEMD','>1 License, not writing to License.md')
+  logger.info('Fetching Package Manager')
   let packageManager:string;
   if (commandExistsSync('pnpm')) packageManager='pnpm'
   else if (commandExistsSync('yarn')) packageManager='yarn'
@@ -157,8 +177,21 @@ Logger.postGuillemet=true;
     logger.error('ENOPM','Cannot find package manager! Please install pnpm @ https://pnpm.io')
     return;
   }
+  const readme = resolve(outdir,'README.md');
   const packageManagerInstall = `${packageManager} ${packageManager==='yarn'?'add':'i'}`
-  execSync(packageManagerInstall,{
+  const packageManagerRun = `${packageManager}${packageManager==='npm'?' run':''}`
+  const oldTemplate = template
+  template=(a:string)=>oldTemplate(a).replace(/<package manager>/gui,packageManager).replace(/<package manager install>/gui,packageManagerInstall).replace(/<package manager run>/gui,packageManagerRun)
+  if (existsSync(readme)) {
+    logger.info('Writing Readme')
+    writeFileSync(readme,template(readFileSync(readme,'utf-8')))
+  }
+  logger.info('Installing Dependencies')
+  execSync(packageManager==='yarn'?'yarn':packageManagerInstall,{
+    cwd: outdir
+  })
+  logger.info('Initial Build')
+  execSync(packageManagerRun+' build',{
     cwd: outdir
   })
   logger.success('Done!')
