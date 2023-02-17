@@ -2,7 +2,7 @@ import prompts from 'prompts';
 import Logger from '@exponentialworkload/logger';
 import licenseContents from './licenses';
 import { resolve } from 'path';
-import { copySync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'fs-extra';
+import { copySync, ensureDirSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'fs-extra';
 import { execSync } from 'child_process';
 import {sync as commandExistsSync} from 'command-exists'
 import chalk from 'chalk';
@@ -161,7 +161,7 @@ const mappings = {
     }
   }
   if (!existsSync(outdir))
-    mkdirSync(outdir);
+    ensureDirSync(outdir);
   logger.info('Copying Template')
   copySync(resolve(baseTemplateFiles,'all'),outdir)
   copySync(resolve(baseTemplateFiles,response.template),outdir)
@@ -197,6 +197,8 @@ const mappings = {
     logger.info('Writing Readme')
     writeFileSync(readme,template(readFileSync(readme,'utf-8')))
   }
+  if (existsSync(resolve(outdir,'gitignore')))
+    renameSync(resolve(outdir,'gitignore'),resolve(outdir,'.gitignore'))
   logger.info('Installing Dependencies')
   execSync(packageManager==='yarn'?'yarn':packageManagerInstall,{
     cwd: outdir
