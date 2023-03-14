@@ -1,0 +1,19 @@
+{
+  "name": "test",
+  "displayName": "ExampleProject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "blb-prod",
+    "prod": "blb-prod",
+    "dev": "blb-dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.8.4",
+    "basic-lua-bundler": "^1.2.0"
+  }
+}
