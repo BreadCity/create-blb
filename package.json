@@ -1,7 +1,7 @@
 {
   "name": "create-blb",
   "displayName": "Create BLB",
-  "version": "0.1.3-fix-fs-extra",
+  "version": "0.1.4-fix-fs-extra",
   "description": "Creates a blb application",
   "main": "dist/index.js",
   "scripts": {
