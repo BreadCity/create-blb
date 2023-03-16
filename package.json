@@ -24,11 +24,12 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "fs-extra": "^11.1.0",
-    "chalk": "^4.1.2",
     "@exponentialworkload/logger": "^1.0.2",
+    "chalk": "^4.1.2",
     "command-exists": "^1.2.9",
+    "fs-extra": "^11.1.0",
     "get-cursor-position": "^2.0.0",
+    "node-gyp": "^9.3.1",
     "prompts": "^2.4.2"
   },
   "homepage": "https://github.com/BreadCity/create-blb",
